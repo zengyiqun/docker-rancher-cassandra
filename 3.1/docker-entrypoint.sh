@@ -26,13 +26,10 @@ if [ "$1" = 'cassandra' ]; then
 			container_ip="$(curl --retry 3 --fail --silent $RANCHER_META/containers/$container_name/primary_ip)"
 
 			# TODO can we somehow check if container is already running correctly?
-
-			if [ "$container_ip" != "$PRIMARY_IP" ]; then
-				if [ -z "$CASSANDRA_SEEDS" ]; then
-					CASSANDRA_SEEDS="$container_ip"
-				else
-					CASSANDRA_SEEDS="$CASSANDRA_SEEDS,$container_ip"
-				fi
+			if [ -z "$CASSANDRA_SEEDS" ]; then
+				CASSANDRA_SEEDS="$container_ip"
+			else
+				CASSANDRA_SEEDS="$CASSANDRA_SEEDS,$container_ip"
 			fi
 		done
 	else
