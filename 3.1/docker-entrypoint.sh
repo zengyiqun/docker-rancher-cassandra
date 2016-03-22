@@ -16,12 +16,14 @@ if [ "$1" = 'cassandra' ]; then
 		CASSANDRA_LISTEN_ADDRESS=$PRIMARY_IP
 		CASSANDRA_BROADCAST_ADDRESS=$CASSANDRA_LISTEN_ADDRESS
 		CASSANDRA_BROADCAST_RPC_ADDRESS=$CASSANDRA_BROADCAST_ADDRESS
-
+		echo "AAA $RANCHER_SEED_SERVICE"
 		if [ -n "$RANCHER_SEED_SERVICE" ]; then
-			containers="$(curl --retry 3 --fail --silent $RANCHER_META/services/${RANCHER_SEED_SERVICE}/containers)"
+			containers1="$(curl --retry 3 --fail --silent $RANCHER_META/services/${RANCHER_SEED_SERVICE}/containers)"
+			echo "BBBB $containers1"
 		else
 			containers="$(curl --retry 3 --fail --silent $RANCHER_META/self/service/containers)"
 		fi
+		containers="$(curl --retry 3 --fail --silent $RANCHER_META/self/service/containers)"
 		readarray -t containers_array <<<"$containers"
 		#echo ${containers_array[0]}
 		for i in "${containers_array[@]}"
