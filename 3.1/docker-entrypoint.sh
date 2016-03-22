@@ -23,7 +23,7 @@ if [ "$1" = 'cassandra' ]; then
 		#echo ${containers_array[0]}
 		for i in "${containers_array[@]}"
 		do
-			container_name="$(curl --retry 3 --fail --silent $RANCHER_META/self/service/containers/$i)"
+			container_name="$(curl --retry 3 --fail --silent $RANCHER_META/services/${RANCHER_SEED_SERVICE}/containers/$i)"
 			container_ip="$(curl --retry 3 --fail --silent $RANCHER_META/containers/$container_name/primary_ip)"
 
 			# TODO can we somehow check if container is already running correctly?
