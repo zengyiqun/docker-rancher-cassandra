@@ -17,7 +17,11 @@ if [ "$1" = 'cassandra' ]; then
 		CASSANDRA_BROADCAST_ADDRESS=$CASSANDRA_LISTEN_ADDRESS
 		CASSANDRA_BROADCAST_RPC_ADDRESS=$CASSANDRA_BROADCAST_ADDRESS
 
-		containers="$(curl --retry 3 --fail --silent $RANCHER_META/self/service/containers)"
+		if [ -n "$RANCHER_SEED_SERVICE" ]; then
+			containers="$(curl --retry 3 --fail --silent $RANCHER_META/services/${RANCHER_SEED_SERVICE}/containers)"
+		else
+			containers="$(curl --retry 3 --fail --silent $RANCHER_META/self/service/containers)"
+		fi
 		readarray -t containers_array <<<"$containers"
 		#echo ${containers_array[0]}
 		for i in "${containers_array[@]}"
@@ -70,6 +74,9 @@ if [ "$1" = 'cassandra' ]; then
 			sed -ri 's/^(# )?('"$yaml"':).*/\2 '"$val"'/' "$CASSANDRA_CONFIG/cassandra.yaml"
 		fi
 	done
+
+	echo "Replacing snitch"
+	sed -ri 's/^endpoint_snitch.*/endpoint_snitch: GossipingPropertyFileSnitch/' "$CASSANDRA_CONFIG/cassandra-rackdc.properties"
 
 	for rackdc in dc rack; do
 		var="CASSANDRA_${rackdc^^}"
