@@ -1,24 +1,22 @@
 FROM debian:jessie-backports
 
 RUN echo 'deb http://httpredir.debian.org/debian jessie-backports main' >> /etc/apt/sources.list.d/openjdk8.list
-
-RUN apt-get update \
-	&& apt-get -t jessie-backports install -y openjdk-8-jre-headless \
-	&& apt-get install -y ntp
+RUN echo 'deb http://www.apache.org/dist/cassandra/debian 311x main' >> /etc/apt/sources.list.d/cassandra.list
 
 RUN apt-key adv --keyserver pool.sks-keyservers.net --recv-key A278B781FE4B2BDA
-
-RUN echo 'deb http://www.apache.org/dist/cassandra/debian 311x main' >> /etc/apt/sources.list.d/cassandra.list
 
 ENV CASSANDRA_VERSION 3.11.3
 
 RUN apt-get update \
+	&& apt-get -t jessie-backports install -y openjdk-8-jre-headless \
+	&& apt-get install -y ntp \
 	&& apt-get install -y curl cassandra="$CASSANDRA_VERSION" \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV CASSANDRA_CONFIG /etc/cassandra
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 VOLUME /var/lib/cassandra
