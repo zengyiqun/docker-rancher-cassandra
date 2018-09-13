@@ -1,6 +1,12 @@
 FROM debian:jessie-backports
 
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 514A2AD631A57A16DD0047EC749D6EEC0353B12C
+RUN echo 'deb http://httpredir.debian.org/debian jessie-backports main' >> /etc/apt/sources.list.d/openjdk8.list
+
+RUN apt-get update \
+	&& apt-get -t jessie-backports install -y openjdk-8-jre-headless \
+	&& apt-get install -y ntp
+
+RUN apt-key adv --keyserver pool.sks-keyservers.net --recv-key A278B781FE4B2BDA
 
 RUN echo 'deb http://www.apache.org/dist/cassandra/debian 311x main' >> /etc/apt/sources.list.d/cassandra.list
 
