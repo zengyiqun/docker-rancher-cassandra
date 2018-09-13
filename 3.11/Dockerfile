@@ -15,7 +15,9 @@ RUN apt-get update \
 
 ENV CASSANDRA_CONFIG /etc/cassandra
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+ADD docker-entrypoint.sh /docker-entrypoint.sh
+
+RUN chmod +777 /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
