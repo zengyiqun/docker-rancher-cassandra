@@ -1,3 +1,7 @@
+# Update Catalogs
+
+* Add Support for Cassandra 3.11.3
+
 # About this Repo
 
 This is an extended version of the [official Docker Cassandra](https://hub.docker.com/_/cassandra/) image for added support for [rancher](http://rancher.com/).
