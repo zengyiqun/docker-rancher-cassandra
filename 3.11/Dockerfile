@@ -1,5 +1,7 @@
 FROM debian:jessie-backports
 
+RUN groupadd -r cassandra --gid=999 && useradd -r -g cassandra --uid=999 cassandra 
+
 RUN echo 'deb http://httpredir.debian.org/debian jessie-backports main' >> /etc/apt/sources.list.d/openjdk8.list
 RUN echo 'deb http://www.apache.org/dist/cassandra/debian 311x main' >> /etc/apt/sources.list.d/cassandra.list
 
@@ -15,11 +17,13 @@ RUN apt-get update \
 
 ENV CASSANDRA_CONFIG /etc/cassandra
 
-ADD docker-entrypoint.sh /docker-entrypoint.sh
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 
-RUN chmod +777 /docker-entrypoint.sh
+RUN chmod u+x /docker-entrypoint.sh 
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+RUN su - cassandra
 
 VOLUME /var/lib/cassandra
 
@@ -29,4 +33,4 @@ VOLUME /var/lib/cassandra
 # 9042: CQL
 # 9160: thrift service
 EXPOSE 7000 7001 7199 9042 9160
-CMD ["cassandra", "-f"]
+CMD ["cassandra", "-f -R"]
